@@ -49,7 +49,7 @@ export default function NativaLandingPage() {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: "7ae37f52-b734-4cac-aa98-6b05f59e9c97",
+          access_key: import.meta.env.VITE_WEB3FORMS_KEY,
           subject: "New contact from Nativa website",
           from_name: "Nativa Website",
           name: formData.name,
