@@ -338,19 +338,19 @@ export default function NativaLandingPage() {
               <div className="flex gap-3 self-end">
                 <div className="rounded-[16px] border border-white/30 bg-[#163e1f]/78 px-4 py-3 text-white shadow-[0_10px_24px_rgba(0,0,0,0.16)] backdrop-blur-md">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/75">
-                    Focus
+                    LEARN FAST
                   </div>
                   <div className="mt-1 text-[18px] font-semibold leading-none">
-                    U.S. → Brazil
+                    Validate locally
                   </div>
                 </div>
 
                 <div className="rounded-[16px] border border-white/30 bg-[#163e1f]/78 px-4 py-3 text-white shadow-[0_10px_24px_rgba(0,0,0,0.16)] backdrop-blur-md">
                   <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/75">
-                    Model
+                    GROW SMART
                   </div>
                   <div className="mt-1 text-[18px] font-semibold leading-none">
-                    Pilot → Growth
+                    Scale with confidence
                   </div>
                 </div>
               </div>
@@ -518,19 +518,30 @@ export default function NativaLandingPage() {
 
             <div className="relative z-10 grid gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-start">
               <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#bfd7bf]">
-                  Contact
-                </div>
-                <h2 className="mt-3 max-w-[420px] text-[34px] font-semibold leading-[1.08] tracking-[-0.03em] text-white md:text-[42px]">
-                  Let’s discuss your agtech entry into Brazil.
-                </h2>
-                <p className="mt-4 max-w-[430px] text-[16px] leading-7 text-white/82">
-                  Share a few details about your company, product, and goals. We
-                  will use this as the starting point for an initial
-                  conversation about market entry, localization, and execution
-                  in Brazil.
-                </p>
-              </div>
+  <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#bfd7bf]">
+    Contact
+  </div>
+
+  <h2 className="mt-3 max-w-[420px] text-[34px] font-semibold leading-[1.08] tracking-[-0.03em] text-white md:text-[42px]">
+    Let’s discuss your agtech entry into Brazil.
+  </h2>
+
+  <p className="mt-4 max-w-[430px] text-[16px] leading-7 text-white/82">
+    Share a few details about your company, product, and goals. We
+    will use this as the starting point for an initial conversation
+    about market entry, localization, and execution in Brazil.
+  </p>
+
+  <p className="mt-45 hidden max-w-[430px] text-sm leading-6 text-white/85 lg:block">
+  You can also contact us directly at{" "}
+  <a
+    href="mailto:contact@nativaag.com.br"
+    className="font-medium text-white underline underline-offset-4 hover:text-[#d8e7d1]"
+  >
+    contact@nativaag.com.br
+  </a>
+</p>
+</div>
 
               <form
                 onSubmit={handleSubmit}
@@ -597,30 +608,38 @@ export default function NativaLandingPage() {
                   </div>
                 </div>
 
-                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="text-[13px] leading-6 text-[#66756a]">
-                    {status.success && (
-                      <p className="text-green-700">
-                        Message sent successfully.
-                      </p>
-                    )}
-                    {status.error && (
-                      <p className="text-red-600">{status.error}</p>
-                    )}
-                    {!status.success && !status.error && (
-                      <p>Fill out the form and we will get back to you.</p>
-                    )}
-                  </div>
+                <div className="mt-5 flex flex-col gap-4">
+  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="text-[13px] leading-6 text-[#66756a]">
+      {status.success && (
+        <p className="text-green-700">Message sent successfully.</p>
+      )}
+      {status.error && <p className="text-red-600">{status.error}</p>}
+      {!status.success && !status.error && (
+        <p>Fill out the form and we will get back to you.</p>
+      )}
+    </div>
 
-                  <button
-                    type="submit"
-                    disabled={status.loading}
-                    className="inline-flex items-center justify-center gap-3 rounded-[14px] bg-[#174d21] px-7 py-4 text-[14px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#215f23] disabled:cursor-not-allowed disabled:opacity-70"
-                  >
-                    {status.loading ? "Sending..." : "Send message"}
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
+    <button
+      type="submit"
+      disabled={status.loading}
+      className="inline-flex items-center justify-center gap-3 rounded-[14px] bg-[#174d21] px-7 py-4 text-[14px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#215f23] disabled:cursor-not-allowed disabled:opacity-70"
+    >
+      {status.loading ? "Sending..." : "Send message"}
+      <ArrowRight className="h-4 w-4" />
+    </button>
+  </div>
+
+  <p className="border-t border-[#d9e1d7] pt-4 text-sm leading-6 text-[#55635a] lg:hidden">
+    You can also contact us directly at{" "}
+    <a
+      href="mailto:contact@nativaag.com.br"
+      className="font-medium text-[#174d21] underline underline-offset-4"
+    >
+      contact@nativaag.com.br
+    </a>
+  </p>
+</div>
               </form>
             </div>
           </div>
