@@ -191,11 +191,11 @@ export default function NativaLandingPage() {
             </nav>
 
             <a
-              href="#contact"
-              className="rounded-xl bg-[#144c1f] px-7 py-4 text-[13px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#1a5c27]"
-            >
-              LET’S TALK
-            </a>
+  href="#contact"
+  className="shrink-0 whitespace-nowrap rounded-xl bg-[#144c1f] px-4 py-3 text-[12px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#1a5c27] sm:px-7 sm:py-4 sm:text-[13px]"
+>
+  LET’S TALK
+</a>
           </div>
         </header>
 
