@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { trackEvent } from "./lib/analytics";
 import {
   ArrowRight,
   BarChart3,
@@ -61,29 +62,46 @@ export default function NativaLandingPage() {
 
       const result = await response.json();
 
-      if (result.success) {
-        setStatus({ loading: false, success: true, error: "" });
-        setFormData({
-          name: "",
-          phone: "",
-          email: "",
-          message: "",
-        });
-      } else {
-        setStatus({
-          loading: false,
-          success: false,
-          error: "Something went wrong. Please try again.",
-        });
-      }
-    } catch {
-      setStatus({
-        loading: false,
-        success: false,
-        error: "Unable to send message right now.",
-      });
-    }
-  };
+if (result.success) {
+  trackEvent("contact_form_submit_success", {
+    source: "contact_form",
+  });
+
+  trackEvent("generate_lead", {
+    source: "contact_form",
+  });
+
+  setStatus({ loading: false, success: true, error: "" });
+  setFormData({
+    name: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
+} else {
+  trackEvent("contact_form_submit_error", {
+    source: "contact_form",
+    error_type: "api_response_error",
+  });
+
+  setStatus({
+    loading: false,
+    success: false,
+    error: "Something went wrong. Please try again.",
+  });
+}
+} catch {
+  trackEvent("contact_form_submit_error", {
+    source: "contact_form",
+    error_type: "network_or_runtime_error",
+  });
+
+  setStatus({
+    loading: false,
+    success: false,
+    error: "Unable to send message right now.",
+  });
+}};
 
   const cards = [
     {
@@ -188,9 +206,14 @@ export default function NativaLandingPage() {
             </nav>
 
             <a
-              href="#contact"
-              className="shrink-0 whitespace-nowrap rounded-xl bg-[#144c1f] px-4 py-3 text-[12px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#1a5c27] sm:px-7 sm:py-4 sm:text-[13px]"
-              >
+  href="#contact"
+  onClick={() =>
+    trackEvent("cta_lets_talk_click", {
+      location: "header",
+    })
+  }
+  className="shrink-0 whitespace-nowrap rounded-xl bg-[#144c1f] px-4 py-3 text-[12px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#1a5c27] sm:px-7 sm:py-4 sm:text-[13px]"
+>
   LET’S TALK
 </a>
           </div>
@@ -213,12 +236,17 @@ export default function NativaLandingPage() {
               </p>
 
               <a
-                href="#contact"
-                className="mt-8 inline-flex items-center gap-4 rounded-xl bg-[#215f23] px-8 py-5 text-[14px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#2a6d2d]"
-              >
-                LET’S TALK
-                <ArrowRight className="h-4 w-4" />
-              </a>
+  href="#contact"
+  onClick={() =>
+    trackEvent("cta_lets_talk_click", {
+      location: "hero",
+    })
+  }
+  className="mt-8 inline-flex items-center gap-4 rounded-xl bg-[#215f23] px-8 py-5 text-[14px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#2a6d2d]"
+>
+  LET’S TALK
+  <ArrowRight className="h-4 w-4" />
+</a>
             </div>
 
             <div className="mt-12">
@@ -506,11 +534,16 @@ export default function NativaLandingPage() {
   <p className="mt-45 hidden max-w-[430px] text-sm leading-6 text-white/85 lg:block">
   You can also contact us directly at{" "}
   <a
-    href="mailto:contact@nativaag.com.br"
-    className="font-medium text-white underline underline-offset-4 hover:text-[#d8e7d1]"
-  >
-    contact@nativaag.com.br
-  </a>
+  href="mailto:contact@nativaag.com.br"
+  onClick={() =>
+    trackEvent("contact_email_click", {
+      location: "contact_section",
+    })
+  }
+  className="font-medium text-white underline underline-offset-4 hover:text-[#d8e7d1]"
+>
+  contact@nativaag.com.br
+</a>
 </p>
 </div>
 
@@ -605,6 +638,11 @@ export default function NativaLandingPage() {
     You can also contact us directly at{" "}
     <a
       href="mailto:contact@nativaag.com.br"
+      onClick={() =>
+        trackEvent("contact_email_click", {
+          location: "contact_section",
+        })
+      }
       className="font-medium text-[#174d21] underline underline-offset-4"
     >
       contact@nativaag.com.br
