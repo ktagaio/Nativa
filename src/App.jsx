@@ -106,8 +106,8 @@ if (result.success) {
   const cards = [
     {
       icon: Globe,
-      title: "International agtech startups",
-      text1: "from the U.S. and other markets expanding into Brazil.",
+      title: "International agtech startups expanding into Brazil",
+      text1: "From the U.S., Canada, Europe, Asia and other markets",
       text2: "You bring innovation. We bring the local advantage.",
       image: "/images/international-agtech.png",
     },
