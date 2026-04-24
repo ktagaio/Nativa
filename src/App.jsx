@@ -91,8 +91,7 @@ export default function NativaLandingPage() {
       title: "International agtech startups",
       text1: "from the U.S. and other markets expanding into Brazil.",
       text2: "You bring innovation. We bring the local advantage.",
-      image:
-        "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/international-agtech.png",
     },
     {
       icon: Leaf,
@@ -100,8 +99,7 @@ export default function NativaLandingPage() {
       text1:
         "From farm management to fintech, biologicals to marketplaces, and beyond.",
       text2: "Any solution that drives impact in agriculture.",
-      image:
-        "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/across-segments.png",
     },
     {
       icon: Users,
@@ -109,8 +107,7 @@ export default function NativaLandingPage() {
       text1:
         "Validate, learn and build momentum before investing in a local team or infrastructure.",
       text2: "De-risk entry. Maximize chances of success.",
-      image:
-        "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80",
+      image: "/images/founders.png",
     },
   ];
 
@@ -191,9 +188,9 @@ export default function NativaLandingPage() {
             </nav>
 
             <a
-  href="#contact"
-  className="shrink-0 whitespace-nowrap rounded-xl bg-[#144c1f] px-4 py-3 text-[12px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#1a5c27] sm:px-7 sm:py-4 sm:text-[13px]"
->
+              href="#contact"
+              className="shrink-0 whitespace-nowrap rounded-xl bg-[#144c1f] px-4 py-3 text-[12px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#1a5c27] sm:px-7 sm:py-4 sm:text-[13px]"
+              >
   LET’S TALK
 </a>
           </div>
@@ -267,39 +264,14 @@ export default function NativaLandingPage() {
 
           <div className="relative min-h-[620px] overflow-hidden rounded-sm bg-[#e7e2d7] shadow-[0_10px_30px_rgba(0,0,0,0.06)]">
             <img
-              src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1800&q=80"
-              alt="Brazil agricultural landscape"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-
-            <div className="absolute inset-0 bg-gradient-to-r from-[#f4f3ed] via-[#f4f3ed]/80 via-[24%] to-transparent" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_45%,rgba(255,229,180,0.25),transparent_18%)]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-            <div className="absolute inset-0 bg-black/[0.03]" />
-
+            src="/images/hero-main.png"
+            alt="Nativa agtech expansion in Brazil"
+            className="absolute inset-0 h-full w-full object-cover object-[78%_center]"
+              />
             <div className="absolute left-[68%] top-[46%] -translate-x-1/2 -translate-y-1/2">
               <div className="relative h-[470px] w-[470px] rounded-full border border-white/18">
                 <div className="absolute inset-[30px] rounded-full border border-white/14" />
-                <div className="absolute inset-[60px] rounded-full border border-white/10" />
-
-                <svg
-                  viewBox="0 0 950 980"
-                  className="absolute left-1/2 top-1/2 h-[360px] w-[350px] -translate-x-1/2 -translate-y-1/2 opacity-90"
-                  fill="none"
-                >
-                  <path
-                    d="M207 19L342 0L353 86L459 68L541 26L594 122L801 195L929 244L947 311L889 414L854 447L830 594L784 681L719 683L613 749L622 813L548 926L483 979L402 827L467 747L491 707L390 658L382 512L334 507L316 442L216 413L208 365L95 381L1 325L17 272L44 233L70 233L83 155L56 97L128 68L185 104L246 71L237 19L207 19Z"
-                    stroke="rgba(255,255,255,0.96)"
-                    strokeWidth="14"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M458 68L594 122M594 122L801 195M801 195L889 414M889 414L830 594M830 594L719 683M719 683L491 707M491 707L622 813M622 813L483 979M483 979L402 827M402 827L467 747M467 747L390 658M390 658L382 512M382 512L334 507M334 507L216 413M216 413L95 381M95 381L1 325M1 325L70 233M70 233L208 365M208 365L83 155M83 155L185 104M185 104L353 86M353 86L246 71M246 71L458 68M208 365L216 413M208 365L317 441M317 441L382 512M317 441L208 365M317 441L208 271M208 271L208 365M208 271L83 155M208 271L353 86M208 271L458 68M208 271L95 381M382 512L458 68M382 512L594 122M382 512L542 691M542 691L719 683M542 691L491 707M542 691L390 658M542 691L830 594M542 691L889 414M458 68L317 441M594 122L719 249M719 249L889 414M719 249L801 195M719 249L594 122M719 249L830 594M719 249L542 385M542 385L458 68M542 385L594 122M542 385L889 414M542 385L382 512M542 385L719 683M458 68L353 86M185 104L317 441M216 413L390 658M622 813L719 683M402 827L483 979"
-                    stroke="rgba(255,255,255,0.35)"
-                    strokeWidth="6"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <div className="absolute inset-[60px] rounded-full border border-white/10" />  
               </div>
             </div>
 
@@ -409,29 +381,28 @@ export default function NativaLandingPage() {
             Deep expertise across the agtech ecosystem.
           </h2>
 
-          <div className="mt-6 border-y border-black/10 py-5">
-            <div className="grid grid-cols-5 gap-y-6 md:grid-cols-10">
-              {expertise.map((item, index) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.top + item.bottom}
-                    className={`flex flex-col items-center px-2 text-center ${
-                      index < expertise.length - 1
-                        ? "md:border-r md:border-black/10"
-                        : ""
-                    }`}
-                  >
-                    <Icon className="h-7 w-7 text-[#56724f]" />
-                    <div className="mt-2 text-[11.5px] font-medium leading-[1.45] text-[#1d2831]">
-                      <div>{item.top}</div>
-                      <div>{item.bottom}</div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+<div className="mt-6 border-y border-black/10 py-5">
+  <div className="grid grid-cols-3 gap-x-3 gap-y-6 md:grid-cols-5 lg:grid-cols-10">
+    {expertise.map((item, index) => {
+      const Icon = item.icon;
+      return (
+        <div
+          key={item.top + item.bottom}
+          className={`flex min-h-[92px] flex-col items-center justify-start px-1 text-center ${
+            index < expertise.length - 1 ? "lg:border-r lg:border-black/10" : ""
+          }`}
+        >
+          <Icon className="h-7 w-7 text-[#56724f]" />
+
+          <div className="mt-2 max-w-[96px] text-[10.5px] font-medium leading-[1.28] text-[#1d2831] sm:text-[11px] md:max-w-[115px] md:text-[11.5px]">
+            <div>{item.top}</div>
+            <div>{item.bottom}</div>
           </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
 
           <div className="mt-3 text-center text-[14px] leading-[1.7] text-[#596168]">
             We combine sector knowledge, local relationships and execution
