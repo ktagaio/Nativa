@@ -151,101 +151,128 @@ function handleChange(event) {
     });
   }
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+async function handleSubmit(event) {
+  event.preventDefault();
 
+  if (!formData.privacyConsent) {
     setStatus({
-      loading: true,
+      loading: false,
       success: false,
-      error: "",
+      error: "Você precisa aceitar a Política de Privacidade antes de enviar.",
+    });
+    return;
+  }
+
+  setStatus({
+    loading: true,
+    success: false,
+    error: "",
+  });
+
+  try {
+    const payload = {
+      access_key: WEB3FORMS_KEY,
+      subject: "Novo cadastro - Rede Nativa",
+      from_name: "Nativa Website",
+
+      form_origin: "Rede Nativa signup form",
+      privacy_policy_url: "https://www.nativaag.com.br/politica-de-privacidade",
+      privacy_policy_version: "2026-04",
+      page_url: window.location.href,
+      user_agent: navigator.userAgent,
+
+      name: formData.name,
+      company: formData.company,
+      email: formData.email,
+      phone: formData.phone,
+      location: formData.location,
+      profile: formData.profile,
+      interests: formData.interests.join(", "),
+      objective: formData.objective,
+      message: formData.message,
+
+      privacy_consent: formData.privacyConsent
+        ? "Aceite LGPD concedido pelo usuário"
+        : "Não concedido",
+      consent_text:
+        "Declaro que li e concordo que a Nativa trate as informações enviadas neste formulário para entrar em contato sobre oportunidades, conexões e iniciativas relacionadas à Rede Nativa, conforme a Política de Privacidade.",
+      consent_date: new Date().toISOString(),
+    };
+
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
     });
 
-    try {
-const payload = {
-  access_key: WEB3FORMS_KEY,
-  subject: "Novo cadastro - Rede Nativa",
-  from_name: "Nativa Website",
+    const result = await response.json().catch(() => ({}));
 
-  form_origin: "Rede Nativa signup form",
-  privacy_policy_url: "https://www.nativaag.com.br/politica-de-privacidade",
-  privacy_policy_version: "2026-04",
-  page_url: window.location.href,
-  user_agent: navigator.userAgent,
+    console.log("Rede Nativa form response:", {
+      status: response.status,
+      ok: response.ok,
+      result,
+    });
 
-  name: formData.name,
-  company: formData.company,
-  email: formData.email,
-  phone: formData.phone,
-  location: formData.location,
-  profile: formData.profile,
-  interests: formData.interests.join(", "),
-  objective: formData.objective,
-  message: formData.message,
-
-  privacy_consent: formData.privacyConsent
-    ? "Aceite LGPD concedido pelo usuário"
-    : "Não concedido",
-  consent_text:
-    "Declaro que li e concordo que a Nativa trate as informações enviadas neste formulário para entrar em contato sobre oportunidades, conexões e iniciativas relacionadas à Rede Nativa, conforme a Política de Privacidade.",
-  consent_date: new Date().toISOString(),
-};
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(payload),
+    if (response.ok && result.success !== false) {
+      trackEvent("rede_nativa_signup_success", {
+        source: "rede_nativa_form",
       });
 
-      const result = await response.json();
-
-      if (result.success) {
-        trackEvent("rede_nativa_signup_success", {
-          source: "rede_nativa_form",
-        });
-
-        trackEvent("generate_lead", {
-          source: "rede_nativa_form",
-        });
-
-        setStatus({
-          loading: false,
-          success: true,
-          error: "",
-        });
-
-        setFormData({
-            name: "",
-            company: "",
-            email: "",
-            phone: "",
-            location: "",
-            profile: "",
-            interests: [],
-            objective: "",
-            message: "",
-            privacyConsent: false,
-        });
-        setStatus({
-          loading: false,
-          success: false,
-          error: "Não foi possível enviar agora. Tente novamente.",
-        });
-      }
-    } catch {
-      trackEvent("rede_nativa_signup_error", {
+      trackEvent("generate_lead", {
         source: "rede_nativa_form",
-        error_type: "network_or_runtime_error",
       });
 
       setStatus({
         loading: false,
-        success: false,
-        error: "Não foi possível enviar agora. Tente novamente.",
+        success: true,
+        error: "",
       });
+
+      setFormData({
+        name: "",
+        company: "",
+        email: "",
+        phone: "",
+        location: "",
+        profile: "",
+        interests: [],
+        objective: "",
+        message: "",
+        privacyConsent: false,
+      });
+
+      return;
     }
+
+    trackEvent("rede_nativa_signup_error", {
+      source: "rede_nativa_form",
+      error_type: "api_response_error",
+      status_code: response.status,
+    });
+
+    setStatus({
+      loading: false,
+      success: false,
+      error: "Não foi possível enviar agora. Tente novamente.",
+    });
+  } catch (error) {
+    console.error("Rede Nativa form error:", error);
+
+    trackEvent("rede_nativa_signup_error", {
+      source: "rede_nativa_form",
+      error_type: "network_or_runtime_error",
+    });
+
+    setStatus({
+      loading: false,
+      success: false,
+      error: "Não foi possível enviar agora. Tente novamente.",
+    });
   }
+}
 
   return (
     <div className="min-h-screen bg-[#f4f3ed] text-[#0d1823]">
