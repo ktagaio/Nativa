@@ -100,43 +100,49 @@ const audienceCards = [
 ];
 
 export default function RedeNativa() {
-const [formData, setFormData] = useState({
-  name: "",
-  company: "",
-  email: "",
-  phone: "",
-  location: "",
-  profile: "",
-  interests: [],
-  objective: "",
-  message: "",
-  privacyConsent: false,
-});
-const [formStarted, setFormStarted] = useState(false);
-
-function handleFormStart() {
-  if (formStarted) return;
-
-  setFormStarted(true);
-
-  trackEvent("rede_nativa_form_start", {
-    source: "rede_nativa_form",
+  const [formData, setFormData] = useState({
+    name: "",
+    company: "",
+    email: "",
+    phone: "",
+    location: "",
+    profile: "",
+    interests: [],
+    objective: "",
+    message: "",
+    privacyConsent: false,
   });
-}
+
+  const [formStarted, setFormStarted] = useState(false);
+
   const [status, setStatus] = useState({
     loading: false,
     success: false,
     error: "",
   });
 
-function handleChange(event) {
-  const { name, value, type, checked } = event.target;
+  function handleFormStart() {
+    if (formStarted) return;
 
-  setFormData((current) => ({
-    ...current,
-    [name]: type === "checkbox" ? checked : value,
-  }));
-}
+    setFormStarted(true);
+
+    trackEvent("rede_nativa_form_start", {
+      source: "rede_nativa_form",
+      form_origin: "Rede Nativa signup form",
+      page_path: window.location.pathname,
+      page_location: window.location.href,
+      form_type: "client_network_signup",
+    });
+  }
+
+  function handleChange(event) {
+    const { name, value, type, checked } = event.target;
+
+    setFormData((current) => ({
+      ...current,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  }
 
   function handleInterestChange(value) {
     setFormData((current) => {
@@ -151,191 +157,218 @@ function handleChange(event) {
     });
   }
 
-async function handleSubmit(event) {
-  event.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
 
-  if (!formData.privacyConsent) {
+    if (!formData.privacyConsent) {
+      setStatus({
+        loading: false,
+        success: false,
+        error: "Você precisa aceitar a Política de Privacidade antes de enviar.",
+      });
+      return;
+    }
+
     setStatus({
-      loading: false,
+      loading: true,
       success: false,
-      error: "Você precisa aceitar a Política de Privacidade antes de enviar.",
-    });
-    return;
-  }
-
-  setStatus({
-    loading: true,
-    success: false,
-    error: "",
-  });
-
-  try {
-    const payload = {
-      access_key: WEB3FORMS_KEY,
-      subject: "Novo cadastro - Rede Nativa",
-      from_name: "Nativa Website",
-
-      form_origin: "Rede Nativa signup form",
-      privacy_policy_url: "https://www.nativaag.com.br/politica-de-privacidade",
-      privacy_policy_version: "2026-04",
-      page_url: window.location.href,
-      user_agent: navigator.userAgent,
-
-      name: formData.name,
-      company: formData.company,
-      email: formData.email,
-      phone: formData.phone,
-      location: formData.location,
-      profile: formData.profile,
-      interests: formData.interests.join(", "),
-      objective: formData.objective,
-      message: formData.message,
-
-      privacy_consent: formData.privacyConsent
-        ? "Aceite LGPD concedido pelo usuário"
-        : "Não concedido",
-      consent_text:
-        "Declaro que li e concordo que a Nativa trate as informações enviadas neste formulário para entrar em contato sobre oportunidades, conexões e iniciativas relacionadas à Rede Nativa, conforme a Política de Privacidade.",
-      consent_date: new Date().toISOString(),
-    };
-
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(payload),
+      error: "",
     });
 
-    const result = await response.json().catch(() => ({}));
+    try {
+      const payload = {
+        access_key: WEB3FORMS_KEY,
+        subject: "Novo cadastro - Rede Nativa",
+        from_name: "Nativa Website",
 
-    console.log("Rede Nativa form response:", {
-      status: response.status,
-      ok: response.ok,
-      result,
-    });
+        form_origin: "Rede Nativa signup form",
+        privacy_policy_url:
+          "https://www.nativaag.com.br/politica-de-privacidade",
+        privacy_policy_version: "2026-04",
+        page_url: window.location.href,
+        user_agent: navigator.userAgent,
 
-    if (response.ok && result.success !== false) {
-      trackEvent("rede_nativa_signup_success", {
-        source: "rede_nativa_form",
+        name: formData.name,
+        company: formData.company,
+        email: formData.email,
+        phone: formData.phone,
+        location: formData.location,
+        profile: formData.profile,
+        interests: formData.interests.join(", "),
+        objective: formData.objective,
+        message: formData.message,
+
+        privacy_consent: formData.privacyConsent
+          ? "Aceite LGPD concedido pelo usuário"
+          : "Não concedido",
+        consent_text:
+          "Declaro que li e concordo que a Nativa trate as informações enviadas neste formulário para entrar em contato sobre oportunidades, conexões e iniciativas relacionadas à Rede Nativa, conforme a Política de Privacidade.",
+        consent_date: new Date().toISOString(),
+      };
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
       });
 
-      trackEvent("generate_lead", {
+      const result = await response.json().catch(() => ({}));
+
+      if (response.ok && result.success !== false) {
+        const successParams = {
+          source: "rede_nativa_form",
+          form_origin: "Rede Nativa signup form",
+          page_path: window.location.pathname,
+          page_location: window.location.href,
+          form_type: "client_network_signup",
+        };
+
+        trackEvent("rede_nativa_signup_success", successParams);
+
+        trackEvent("generate_lead", successParams);
+
+        setStatus({
+          loading: false,
+          success: true,
+          error: "",
+        });
+
+        setFormData({
+          name: "",
+          company: "",
+          email: "",
+          phone: "",
+          location: "",
+          profile: "",
+          interests: [],
+          objective: "",
+          message: "",
+          privacyConsent: false,
+        });
+
+        setFormStarted(false);
+
+        return;
+      }
+
+      trackEvent("rede_nativa_signup_error", {
         source: "rede_nativa_form",
+        form_origin: "Rede Nativa signup form",
+        page_path: window.location.pathname,
+        page_location: window.location.href,
+        form_type: "client_network_signup",
+        error_type: "api_response_error",
+        status_code: response.status,
       });
 
       setStatus({
         loading: false,
-        success: true,
-        error: "",
+        success: false,
+        error: "Não foi possível enviar agora. Tente novamente.",
+      });
+    } catch {
+      trackEvent("rede_nativa_signup_error", {
+        source: "rede_nativa_form",
+        form_origin: "Rede Nativa signup form",
+        page_path: window.location.pathname,
+        page_location: window.location.href,
+        form_type: "client_network_signup",
+        error_type: "network_or_runtime_error",
       });
 
-      setFormData({
-        name: "",
-        company: "",
-        email: "",
-        phone: "",
-        location: "",
-        profile: "",
-        interests: [],
-        objective: "",
-        message: "",
-        privacyConsent: false,
+      setStatus({
+        loading: false,
+        success: false,
+        error: "Não foi possível enviar agora. Tente novamente.",
       });
-
-      return;
     }
-
-    trackEvent("rede_nativa_signup_error", {
-      source: "rede_nativa_form",
-      error_type: "api_response_error",
-      status_code: response.status,
-    });
-
-    setStatus({
-      loading: false,
-      success: false,
-      error: "Não foi possível enviar agora. Tente novamente.",
-    });
-  } catch (error) {
-    console.error("Rede Nativa form error:", error);
-
-    trackEvent("rede_nativa_signup_error", {
-      source: "rede_nativa_form",
-      error_type: "network_or_runtime_error",
-    });
-
-    setStatus({
-      loading: false,
-      success: false,
-      error: "Não foi possível enviar agora. Tente novamente.",
-    });
   }
-}
 
   return (
     <div className="min-h-screen bg-[#f4f3ed] text-[#0d1823]">
-        <Helmet>
-  <title>Rede Nativa de Inovação Agro | Nativa</title>
-  <meta
-    name="description"
-    content="A Rede Nativa conecta produtores, revendas, cooperativas, consultores e empresas do agro a tecnologias agrícolas inovadoras com potencial de gerar valor no Brasil."
-  />
-  <link rel="canonical" href="https://www.nativaag.com.br/rede-nativa" />
+      <Helmet>
+        <title>Rede Nativa de Inovação Agro | Nativa</title>
+        <meta
+          name="description"
+          content="A Rede Nativa conecta produtores, revendas, cooperativas, consultores e empresas do agro a tecnologias agrícolas inovadoras com potencial de gerar valor no Brasil."
+        />
+        <link rel="canonical" href="https://www.nativaag.com.br/rede-nativa" />
 
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.nativaag.com.br/rede-nativa" />
-  <meta property="og:title" content="Rede Nativa de Inovação Agro | Nativa" />
-  <meta
-    property="og:description"
-    content="Conecte sua empresa a tecnologias agrícolas inovadoras com potencial de gerar valor no Brasil."
-  />
-  <meta property="og:image" content="https://www.nativaag.com.br/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://www.nativaag.com.br/rede-nativa"
+        />
+        <meta
+          property="og:title"
+          content="Rede Nativa de Inovação Agro | Nativa"
+        />
+        <meta
+          property="og:description"
+          content="Conecte sua empresa a tecnologias agrícolas inovadoras com potencial de gerar valor no Brasil."
+        />
+        <meta
+          property="og:image"
+          content="https://www.nativaag.com.br/og-image.png"
+        />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
 
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Rede Nativa de Inovação Agro | Nativa" />
-  <meta
-    name="twitter:description"
-    content="Conecte sua empresa a tecnologias agrícolas inovadoras com potencial de gerar valor no Brasil."
-  />
-  <meta name="twitter:image" content="https://www.nativaag.com.br/og-image.png" />
-</Helmet>
-<header className="mx-auto flex max-w-[1180px] items-start justify-between gap-4 px-5 py-5 md:px-6 md:py-6">
-  <Link to="/" className="block min-w-0">
-    <div className="text-[24px] font-semibold leading-none tracking-[0.2em] text-[#174d21] md:text-[28px]">
-      NATIVA
-    </div>
-    <div className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.12em] text-[#344134] md:text-[10px] md:tracking-[0.14em]">
-      Make agtech native to Brazil
-    </div>
-  </Link>
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Rede Nativa de Inovação Agro | Nativa"
+        />
+        <meta
+          name="twitter:description"
+          content="Conecte sua empresa a tecnologias agrícolas inovadoras com potencial de gerar valor no Brasil."
+        />
+        <meta
+          name="twitter:image"
+          content="https://www.nativaag.com.br/og-image.png"
+        />
+      </Helmet>
 
-  <div className="flex shrink-0 items-center gap-2">
-    <Link
-      to="/"
-      className="inline-flex items-center gap-2 rounded-xl border border-[#174d21]/20 bg-white px-3 py-3 text-[10px] font-semibold uppercase text-[#174d21] shadow-sm transition hover:bg-[#eef3eb] sm:px-4 md:px-5 md:text-[12px]"
-    >
-      <ArrowLeft className="h-4 w-4" />
-      <span className="hidden sm:inline">Voltar</span>
-    </Link>
+      <header className="mx-auto flex max-w-[1180px] items-start justify-between gap-4 px-5 py-5 md:px-6 md:py-6">
+        <Link to="/" className="block min-w-0">
+          <div className="text-[24px] font-semibold leading-none tracking-[0.2em] text-[#174d21] md:text-[28px]">
+            NATIVA
+          </div>
+          <div className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.12em] text-[#344134] md:text-[10px] md:tracking-[0.14em]">
+            Make agtech native to Brazil
+          </div>
+        </Link>
 
-    <a
-      href="#cadastro"
-      onClick={() =>
-        trackEvent("rede_nativa_cta_click", {
-          location: "header",
-        })
-      }
-      className="inline-flex items-center gap-2 rounded-xl bg-[#174d21] px-3 py-3 text-[10px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#215f23] sm:px-4 md:px-5 md:text-[12px]"
-    >
-      <span>Cadastrar-se</span>
-      <ArrowRight className="h-4 w-4" />
-    </a>
-  </div>
-</header>
+        <div className="flex shrink-0 items-center gap-2">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 rounded-xl border border-[#174d21]/20 bg-white px-3 py-3 text-[10px] font-semibold uppercase text-[#174d21] shadow-sm transition hover:bg-[#eef3eb] sm:px-4 md:px-5 md:text-[12px]"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Voltar</span>
+          </Link>
+
+          <a
+            href="#cadastro"
+            onClick={() =>
+              trackEvent("rede_nativa_cta_click", {
+                location: "header",
+                source: "rede_nativa_page",
+                page_path: window.location.pathname,
+                page_location: window.location.href,
+              })
+            }
+            className="inline-flex items-center gap-2 rounded-xl bg-[#174d21] px-3 py-3 text-[10px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#215f23] sm:px-4 md:px-5 md:text-[12px]"
+          >
+            <span>Cadastrar-se</span>
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        </div>
+      </header>
+
       <main>
         <section className="mx-auto max-w-[1180px] px-5 pb-10 pt-5 md:px-6 md:pb-12 md:pt-8">
           <div className="grid gap-7 lg:grid-cols-[0.58fr_0.42fr] lg:items-center">
@@ -362,6 +395,9 @@ async function handleSubmit(event) {
                   onClick={() =>
                     trackEvent("rede_nativa_cta_click", {
                       location: "hero",
+                      source: "rede_nativa_page",
+                      page_path: window.location.pathname,
+                      page_location: window.location.href,
                     })
                   }
                   className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#174d21] px-6 py-4 text-[13px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#215f23] sm:w-auto md:px-7 md:text-[14px]"
@@ -375,6 +411,9 @@ async function handleSubmit(event) {
                   onClick={() =>
                     trackEvent("contact_email_click", {
                       location: "rede_nativa_hero",
+                      source: "rede_nativa_page",
+                      page_path: window.location.pathname,
+                      page_location: window.location.href,
                     })
                   }
                   className="inline-flex w-full items-center justify-center rounded-xl border border-[#174d21]/25 bg-white px-6 py-4 text-[13px] font-semibold text-[#174d21] transition hover:bg-[#eef3eb] sm:w-auto md:px-7 md:text-[14px]"
@@ -623,6 +662,14 @@ async function handleSubmit(event) {
                 Prefere falar diretamente? Envie uma mensagem para{" "}
                 <a
                   href="mailto:contact@nativaag.com.br"
+                  onClick={() =>
+                    trackEvent("contact_email_click", {
+                      location: "rede_nativa_signup_section",
+                      source: "rede_nativa_page",
+                      page_path: window.location.pathname,
+                      page_location: window.location.href,
+                    })
+                  }
                   className="font-semibold text-white underline underline-offset-4"
                 >
                   contact@nativaag.com.br
@@ -817,28 +864,30 @@ async function handleSubmit(event) {
                   </p>
                 )}
               </div>
-<label className="mt-5 flex cursor-pointer items-start gap-3 rounded-xl border border-black/10 bg-[#f8f8f4] p-4 text-[13px] leading-6 text-[#465149]">
-  <input
-    type="checkbox"
-    name="privacyConsent"
-    checked={formData.privacyConsent}
-    onChange={handleChange}
-    required
-    className="mt-1"
-  />
-  <span>
-    Declaro que li e concordo que a Nativa trate as informações enviadas neste
-    formulário para entrar em contato sobre oportunidades, conexões e
-    iniciativas relacionadas à Rede Nativa, conforme a{" "}
-    <Link
-      to="/politica-de-privacidade"
-      className="font-semibold text-[#174d21] underline underline-offset-4"
-    >
-      Política de Privacidade
-    </Link>
-    .
-  </span>
-</label>
+
+              <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-xl border border-black/10 bg-[#f8f8f4] p-4 text-[13px] leading-6 text-[#465149]">
+                <input
+                  type="checkbox"
+                  name="privacyConsent"
+                  checked={formData.privacyConsent}
+                  onChange={handleChange}
+                  required
+                  className="mt-1"
+                />
+                <span>
+                  Declaro que li e concordo que a Nativa trate as informações
+                  enviadas neste formulário para entrar em contato sobre
+                  oportunidades, conexões e iniciativas relacionadas à Rede
+                  Nativa, conforme a{" "}
+                  <Link
+                    to="/politica-de-privacidade"
+                    className="font-semibold text-[#174d21] underline underline-offset-4"
+                  >
+                    Política de Privacidade
+                  </Link>
+                  .
+                </span>
+              </label>
 
               <button
                 type="submit"
