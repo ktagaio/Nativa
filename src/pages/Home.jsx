@@ -24,6 +24,7 @@ export default function Home() {
     phone: "",
     email: "",
     message: "",
+    privacyConsent: false,
   });
 
   const [status, setStatus] = useState({
@@ -33,14 +34,26 @@ export default function Home() {
   });
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.privacyConsent) {
+      setStatus({
+        loading: false,
+        success: false,
+        error: "Please accept the Privacy Policy before submitting.",
+      });
+      return;
+    }
+
     setStatus({ loading: true, success: false, error: "" });
 
     try {
@@ -50,59 +63,76 @@ export default function Home() {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({
-          access_key: import.meta.env.VITE_WEB3FORMS_KEY,
-          subject: "New contact from Nativa website",
-          from_name: "Nativa Website",
-          name: formData.name,
-          phone: formData.phone,
-          email: formData.email,
-          message: formData.message,
-        }),
+body: JSON.stringify({
+  access_key: import.meta.env.VITE_WEB3FORMS_KEY,
+  subject: "New contact from Nativa website",
+  from_name: "Nativa Website",
+
+  form_origin: "Nativa homepage contact form",
+  privacy_policy_url: "https://www.nativaag.com.br/politica-de-privacidade",
+  privacy_policy_version: "2026-04",
+  page_url: window.location.href,
+  user_agent: navigator.userAgent,
+
+  name: formData.name,
+  phone: formData.phone,
+  email: formData.email,
+  message: formData.message,
+
+  privacy_consent: formData.privacyConsent
+    ? "LGPD/privacy consent granted by user"
+    : "Not granted",
+  consent_text:
+    "I agree that Nativa may process the information submitted in this form to contact me about market entry, validation and growth opportunities in Brazil, according to the Privacy Policy.",
+  consent_date: new Date().toISOString(),
+}),
       });
 
       const result = await response.json();
 
-if (result.success) {
-  trackEvent("contact_form_submit_success", {
-    source: "contact_form",
-  });
+      if (result.success) {
+        trackEvent("contact_form_submit_success", {
+          source: "contact_form",
+        });
 
-  trackEvent("generate_lead", {
-    source: "contact_form",
-  });
+        trackEvent("generate_lead", {
+          source: "contact_form",
+        });
 
-  setStatus({ loading: false, success: true, error: "" });
-  setFormData({
-    name: "",
-    phone: "",
-    email: "",
-    message: "",
-  });
-} else {
-  trackEvent("contact_form_submit_error", {
-    source: "contact_form",
-    error_type: "api_response_error",
-  });
+        setStatus({ loading: false, success: true, error: "" });
 
-  setStatus({
-    loading: false,
-    success: false,
-    error: "Something went wrong. Please try again.",
-  });
-}
-} catch {
-  trackEvent("contact_form_submit_error", {
-    source: "contact_form",
-    error_type: "network_or_runtime_error",
-  });
+        setFormData({
+          name: "",
+          phone: "",
+          email: "",
+          message: "",
+          privacyConsent: false,
+        });
+      } else {
+        trackEvent("contact_form_submit_error", {
+          source: "contact_form",
+          error_type: "api_response_error",
+        });
 
-  setStatus({
-    loading: false,
-    success: false,
-    error: "Unable to send message right now.",
-  });
-}};
+        setStatus({
+          loading: false,
+          success: false,
+          error: "Something went wrong. Please try again.",
+        });
+      }
+    } catch {
+      trackEvent("contact_form_submit_error", {
+        source: "contact_form",
+        error_type: "network_or_runtime_error",
+      });
+
+      setStatus({
+        loading: false,
+        success: false,
+        error: "Unable to send message right now.",
+      });
+    }
+  };
 
   const cards = [
     {
@@ -207,16 +237,16 @@ if (result.success) {
             </nav>
 
             <a
-  href="#contact"
-  onClick={() =>
-    trackEvent("cta_lets_talk_click", {
-      location: "header",
-    })
-  }
-  className="shrink-0 whitespace-nowrap rounded-xl bg-[#144c1f] px-4 py-3 text-[12px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#1a5c27] sm:px-7 sm:py-4 sm:text-[13px]"
->
-  LET’S TALK
-</a>
+              href="#contact"
+              onClick={() =>
+                trackEvent("cta_lets_talk_click", {
+                  location: "header",
+                })
+              }
+              className="shrink-0 whitespace-nowrap rounded-xl bg-[#144c1f] px-4 py-3 text-[12px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#1a5c27] sm:px-7 sm:py-4 sm:text-[13px]"
+            >
+              LET’S TALK
+            </a>
           </div>
         </header>
 
@@ -237,27 +267,37 @@ if (result.success) {
               </p>
 
               <div className="mt-8 flex flex-col items-start gap-4">
-  <a
-    href="#contact"
-    onClick={() =>
-      trackEvent("cta_lets_talk_click", {
-        location: "hero",
-      })
-    }
-    className="inline-flex items-center gap-4 rounded-xl bg-[#215f23] px-8 py-5 text-[14px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#2a6d2d]"
-  >
-    LET’S TALK
-    <ArrowRight className="h-4 w-4" />
-  </a>
+                <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                  <a
+                    href="#contact"
+                    onClick={() =>
+                      trackEvent("cta_lets_talk_click", {
+                        location: "hero",
+                      })
+                    }
+                    className="inline-flex items-center gap-4 rounded-xl bg-[#215f23] px-8 py-5 text-[14px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#2a6d2d]"
+                  >
+                    LET’S TALK
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
 
-  <Link
-    to="/brazil-agtech-market-entry"
-    className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#174d21] underline underline-offset-4 hover:text-[#2a6d2d]"
-  >
-    Read the Brazil Agtech Market Entry Guide
-    <ArrowRight className="h-4 w-4" />
-  </Link>
-</div>
+                  <Link
+                    to="/rede-nativa"
+                    className="inline-flex items-center gap-2 rounded-xl border border-[#174d21]/20 bg-white px-5 py-4 text-[13px] font-semibold uppercase tracking-[0.06em] text-[#174d21] shadow-sm transition hover:bg-[#eef3eb]"
+                  >
+                    Brazil Network
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+
+                <Link
+                  to="/brazil-agtech-market-entry"
+                  className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#174d21] underline underline-offset-4 hover:text-[#2a6d2d]"
+                >
+                  Read the Brazil Agtech Market Entry Guide
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
 
             <div className="mt-12">
@@ -303,14 +343,14 @@ if (result.success) {
 
           <div className="relative min-h-[620px] overflow-hidden rounded-sm bg-[#e7e2d7] shadow-[0_10px_30px_rgba(0,0,0,0.06)]">
             <img
-            src="/images/hero-main.png"
-            alt="Nativa agtech expansion in Brazil"
-            className="absolute inset-0 h-full w-full object-cover object-[78%_center]"
-              />
+              src="/images/hero-main.png"
+              alt="Nativa agtech expansion in Brazil"
+              className="absolute inset-0 h-full w-full object-cover object-[78%_center]"
+            />
             <div className="absolute left-[68%] top-[46%] -translate-x-1/2 -translate-y-1/2">
               <div className="relative h-[470px] w-[470px] rounded-full border border-white/18">
                 <div className="absolute inset-[30px] rounded-full border border-white/14" />
-                <div className="absolute inset-[60px] rounded-full border border-white/10" />  
+                <div className="absolute inset-[60px] rounded-full border border-white/10" />
               </div>
             </div>
 
@@ -420,28 +460,30 @@ if (result.success) {
             Deep expertise across the agtech ecosystem.
           </h2>
 
-<div className="mt-6 border-y border-black/10 py-5">
-  <div className="grid grid-cols-3 gap-x-3 gap-y-6 md:grid-cols-5 lg:grid-cols-10">
-    {expertise.map((item, index) => {
-      const Icon = item.icon;
-      return (
-        <div
-          key={item.top + item.bottom}
-          className={`flex min-h-[92px] flex-col items-center justify-start px-1 text-center ${
-            index < expertise.length - 1 ? "lg:border-r lg:border-black/10" : ""
-          }`}
-        >
-          <Icon className="h-7 w-7 text-[#56724f]" />
+          <div className="mt-6 border-y border-black/10 py-5">
+            <div className="grid grid-cols-3 gap-x-3 gap-y-6 md:grid-cols-5 lg:grid-cols-10">
+              {expertise.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.top + item.bottom}
+                    className={`flex min-h-[92px] flex-col items-center justify-start px-1 text-center ${
+                      index < expertise.length - 1
+                        ? "lg:border-r lg:border-black/10"
+                        : ""
+                    }`}
+                  >
+                    <Icon className="h-7 w-7 text-[#56724f]" />
 
-          <div className="mt-2 max-w-[96px] text-[10.5px] font-medium leading-[1.28] text-[#1d2831] sm:text-[11px] md:max-w-[115px] md:text-[11.5px]">
-            <div>{item.top}</div>
-            <div>{item.bottom}</div>
+                    <div className="mt-2 max-w-[96px] text-[10.5px] font-medium leading-[1.28] text-[#1d2831] sm:text-[11px] md:max-w-[115px] md:text-[11.5px]">
+                      <div>{item.top}</div>
+                      <div>{item.bottom}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      );
-    })}
-  </div>
-</div>
 
           <div className="mt-3 text-center text-[14px] leading-[1.7] text-[#596168]">
             We combine sector knowledge, local relationships and execution
@@ -517,6 +559,54 @@ if (result.success) {
           </div>
         </section>
 
+        <section className="pt-8">
+          <div className="overflow-hidden rounded-[22px] border border-[#174d21]/12 bg-white shadow-[0_12px_35px_rgba(0,0,0,0.05)]">
+            <div className="grid gap-0 lg:grid-cols-[0.55fr_0.45fr]">
+              <div className="p-7 md:p-9">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#56724f]">
+                  Brazil Network
+                </div>
+
+                <h2 className="mt-3 max-w-[620px] text-[32px] font-semibold leading-[1.12] tracking-[-0.04em] text-[#0d1823] md:text-[40px]">
+                  Are you part of the Brazilian agribusiness ecosystem?
+                </h2>
+
+                <p className="mt-4 max-w-[620px] text-[16px] leading-7 text-[#465149]">
+                  Join the Nativa Network to discover, evaluate and connect with
+                  agtech solutions entering Brazil.
+                </p>
+
+                <Link
+                  to="/rede-nativa"
+                  className="mt-6 inline-flex items-center gap-3 rounded-xl bg-[#174d21] px-6 py-4 text-[13px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#215f23]"
+                >
+                  Join the Brazil Network
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+
+              <div className="relative min-h-[260px] bg-[#102513]">
+                <img
+                  src="/images/hero-main.png"
+                  alt="Brazil agribusiness innovation network"
+                  className="absolute inset-0 h-full w-full object-cover opacity-70"
+                />
+                <div className="absolute inset-0 bg-[#102513]/45" />
+
+                <div className="absolute bottom-5 left-5 right-5 rounded-[18px] border border-white/20 bg-white/12 p-4 text-white backdrop-blur-md">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70">
+                    For Brazilian partners
+                  </div>
+                  <div className="mt-1 text-[20px] font-semibold leading-tight">
+                    Producers, retailers, cooperatives, consultants and
+                    agribusiness organizations.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="contact" className="pt-8">
           <div className="relative overflow-hidden rounded-[22px] bg-[#102513] px-7 py-8 md:px-10 md:py-10">
             <img
@@ -527,40 +617,48 @@ if (result.success) {
             <div className="absolute inset-0 bg-[#102513]/82" />
 
             <div className="relative z-10 grid gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-start">
-              <div>
-  <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#bfd7bf]">
-    Contact
-  </div>
+              <div className="flex h-full flex-col justify-between">
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#bfd7bf]">
+                    Contact
+                  </div>
 
-  <h2 className="mt-3 max-w-[420px] text-[34px] font-semibold leading-[1.08] tracking-[-0.03em] text-white md:text-[42px]">
-    Let’s discuss your agtech entry into Brazil.
-  </h2>
+                  <h2 className="mt-3 max-w-[420px] text-[34px] font-semibold leading-[1.08] tracking-[-0.03em] text-white md:text-[42px]">
+                    Let’s discuss your agtech entry into Brazil.
+                  </h2>
 
-  <p className="mt-4 max-w-[430px] text-[16px] leading-7 text-white/82">
-    Share a few details about your company, product, and goals. We
-    will use this as the starting point for an initial conversation
-    about market entry, localization, and execution in Brazil.
-  </p>
+                  <p className="mt-4 max-w-[430px] text-[16px] leading-7 text-white/82">
+                    Share a few details about your company, product, and goals.
+                    We will use this as the starting point for an initial
+                    conversation about market entry, localization, and execution
+                    in Brazil.
+                  </p>
+                </div>
 
-  <p className="mt-45 hidden max-w-[430px] text-sm leading-6 text-white/85 lg:block">
-  You can also contact us directly at{" "}
-  <a
-  href="mailto:contact@nativaag.com.br"
-  onClick={() =>
-    trackEvent("contact_email_click", {
-      location: "contact_section",
-    })
-  }
-  className="font-medium text-white underline underline-offset-4 hover:text-[#d8e7d1]"
->
-  contact@nativaag.com.br
-</a>
-</p>
-</div>
+                <div className="mt-8 max-w-[430px] rounded-2xl border border-white/12 bg-white/[0.07] p-4 text-white/88 backdrop-blur-sm lg:mt-12">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#bfd7bf]">
+                    Prefer email?
+                  </div>
+                  <p className="mt-2 text-[14px] leading-6">
+                    Contact us directly at{" "}
+                    <a
+                      href="mailto:contact@nativaag.com.br"
+                      onClick={() =>
+                        trackEvent("contact_email_click", {
+                          location: "contact_section",
+                        })
+                      }
+                      className="font-semibold text-white underline underline-offset-4 hover:text-[#d8e7d1]"
+                    >
+                      contact@nativaag.com.br
+                    </a>
+                  </p>
+                </div>
+              </div>
 
               <form
                 onSubmit={handleSubmit}
-                className="rounded-[22px] border border-white/12 bg-white/95 p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)] md:p-6"
+                className="rounded-[24px] border border-white/12 bg-white/95 p-5 shadow-[0_18px_50px_rgba(0,0,0,0.18)] md:p-6"
               >
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="md:col-span-2">
@@ -623,43 +721,61 @@ if (result.success) {
                   </div>
                 </div>
 
-                <div className="mt-5 flex flex-col gap-4">
-  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-    <div className="text-[13px] leading-6 text-[#66756a]">
-      {status.success && (
-        <p className="text-green-700">Message sent successfully.</p>
-      )}
-      {status.error && <p className="text-red-600">{status.error}</p>}
-      {!status.success && !status.error && (
-        <p>Fill out the form and we will get back to you.</p>
-      )}
-    </div>
+                <div className="mt-5">
+                  {status.success && (
+                    <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-[13px] leading-6 text-green-800">
+                      Message sent successfully.
+                    </div>
+                  )}
 
-    <button
-      type="submit"
-      disabled={status.loading}
-      className="inline-flex items-center justify-center gap-3 rounded-[14px] bg-[#174d21] px-7 py-4 text-[14px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#215f23] disabled:cursor-not-allowed disabled:opacity-70"
-    >
-      {status.loading ? "Sending..." : "Send message"}
-      <ArrowRight className="h-4 w-4" />
-    </button>
-  </div>
+                  {status.error && (
+                    <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] leading-6 text-red-700">
+                      {status.error}
+                    </div>
+                  )}
+                </div>
 
-  <p className="border-t border-[#d9e1d7] pt-4 text-sm leading-6 text-[#55635a] lg:hidden">
-    You can also contact us directly at{" "}
-    <a
-      href="mailto:contact@nativaag.com.br"
-      onClick={() =>
-        trackEvent("contact_email_click", {
-          location: "contact_section",
-        })
-      }
-      className="font-medium text-[#174d21] underline underline-offset-4"
-    >
-      contact@nativaag.com.br
-    </a>
-  </p>
-</div>
+                <div className="mt-5 rounded-[20px] border border-[#d9ddd8] bg-[#f8f8f5] p-4">
+                  <label className="flex cursor-pointer items-start gap-3 text-[13px] leading-6 text-[#304133]">
+                    <input
+                      type="checkbox"
+                      name="privacyConsent"
+                      checked={formData.privacyConsent}
+                      onChange={handleChange}
+                      required
+                      className="mt-1 h-4 w-4 shrink-0 accent-[#174d21]"
+                    />
+
+                    <span>
+                      I agree that Nativa may process the information submitted
+                      in this form to contact me about market entry, validation,
+                      and growth opportunities in Brazil, according to the{" "}
+                      <Link
+                        to="/politica-de-privacidade"
+                        className="font-semibold text-[#174d21] underline underline-offset-4"
+                      >
+                        Privacy Policy
+                      </Link>
+                      .
+                    </span>
+                  </label>
+                </div>
+
+                <div className="mt-5 flex flex-col gap-4 border-t border-black/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-[12px] leading-5 text-[#667064]">
+                    We only use your information to evaluate your request and get
+                    back to you.
+                  </p>
+
+                  <button
+                    type="submit"
+                    disabled={status.loading}
+                    className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-[#174d21] px-7 py-4 text-[13px] font-semibold uppercase tracking-[0.04em] text-white transition hover:bg-[#215f23] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-[190px]"
+                  >
+                    {status.loading ? "Sending..." : "Send message"}
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
               </form>
             </div>
           </div>
