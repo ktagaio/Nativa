@@ -6,8 +6,10 @@ export default function RouteTracker() {
   const location = useLocation();
 
   useEffect(() => {
-    trackPageView(location.pathname + location.search);
-  }, [location]);
+    const path = location.pathname + location.search;
+
+    trackPageView(path);
+  }, [location.pathname, location.search]);
 
   return null;
 }
