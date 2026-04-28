@@ -341,73 +341,85 @@ body: JSON.stringify({
             </div>
           </div>
 
-          <div className="relative min-h-[620px] overflow-hidden rounded-sm bg-[#e7e2d7] shadow-[0_10px_30px_rgba(0,0,0,0.06)]">
-            <img
-              src="/images/hero-main.png"
-              alt="Nativa agtech expansion in Brazil"
-              className="absolute inset-0 h-full w-full object-cover object-[78%_center]"
-            />
-            <div className="absolute left-[68%] top-[46%] -translate-x-1/2 -translate-y-1/2">
-              <div className="relative h-[470px] w-[470px] rounded-full border border-white/18">
-                <div className="absolute inset-[30px] rounded-full border border-white/14" />
-                <div className="absolute inset-[60px] rounded-full border border-white/10" />
-              </div>
-            </div>
+<div className="relative min-h-[720px] overflow-hidden rounded-[30px] border border-white/20 bg-[#d8ccb9] shadow-[0_20px_60px_rgba(0,0,0,0.12)] sm:min-h-[680px] lg:min-h-[720px]">
+  {/* Paisagem de fundo */}
+  <img
+    src="/images/hero-landscape.jpg"
+    alt="Brazilian agricultural landscape"
+    className="absolute inset-0 h-full w-full object-cover"
+  />
 
-            <div className="absolute bottom-6 left-6 right-6 z-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-              <div className="max-w-[380px] rounded-[18px] border border-white/50 bg-white/92 p-4 text-[#102015] shadow-[0_12px_30px_rgba(0,0,0,0.12)] backdrop-blur-md">
-                <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#5a6b5d]">
-                  BRAZIL ENTRY
-                </div>
+  {/* Overlays */}
+  <div className="absolute inset-0 bg-gradient-to-br from-[#fff7ec]/45 via-[#e8d2b1]/16 to-[#0d1823]/30" />
+  <div className="absolute inset-0 bg-[radial-gradient(circle_at_58%_26%,rgba(255,225,160,0.28),transparent_30%),radial-gradient(circle_at_50%_46%,rgba(255,255,255,0.12),transparent_28%)]" />
+  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.03)_0%,rgba(0,0,0,0.13)_100%)]" />
 
-                <div className="mt-1 text-[20px] font-semibold leading-tight text-[#14311b]">
-                  Strategy with local execution
-                </div>
+  {/* Mapa do Brasil */}
+  <div className="absolute left-1/2 top-[7%] z-10 w-[78%] max-w-[285px] -translate-x-1/2 sm:top-[6%] sm:w-[76%] sm:max-w-[460px] lg:top-[6%] lg:w-[92%] lg:max-w-[690px]">
+    <div className="absolute left-1/2 top-1/2 h-[58%] w-[58%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#f6d48f]/25 blur-3xl" />
+    <img
+      src="/images/brazil-3d-polygon.png"
+      alt="Stylized 3D polygon map of Brazil"
+      className="hero-map-float relative z-10 w-full object-contain drop-shadow-[0_30px_56px_rgba(0,0,0,0.38)]"
+    />
+  </div>
 
-                <div className="mt-3 space-y-2 text-[13px] text-[#324238]">
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#1f5f27] text-white">
-                      <Check className="h-3 w-3" />
-                    </span>
-                    <span>Go-to-market adapted to Brazil</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#1f5f27] text-white">
-                      <Check className="h-3 w-3" />
-                    </span>
-                    <span>Local partnerships and pilots</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#1f5f27] text-white">
-                      <Check className="h-3 w-3" />
-                    </span>
-                    <span>Faster learning, less risk</span>
-                  </div>
-                </div>
-              </div>
+  {/* Cards inferiores */}
+  <div className="absolute inset-x-4 bottom-4 z-20 grid grid-cols-1 gap-3 sm:inset-x-6 sm:bottom-6 sm:grid-cols-2 lg:grid-cols-[1.34fr_0.62fr_0.62fr] lg:items-end">
+    {/* Card principal glass */}
+    <div className="relative overflow-hidden rounded-[26px] border border-white/45 bg-[linear-gradient(135deg,rgba(255,255,255,0.76),rgba(255,255,255,0.34))] p-4 shadow-[0_14px_46px_rgba(0,0,0,0.22)] backdrop-blur-2xl sm:col-span-2 sm:p-5 lg:col-span-1 lg:p-6">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,0.62),transparent_34%)]" />
+      <div className="pointer-events-none absolute inset-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]" />
 
-              <div className="flex gap-3 self-end">
-                <div className="rounded-[16px] border border-white/30 bg-[#163e1f]/78 px-4 py-3 text-white shadow-[0_10px_24px_rgba(0,0,0,0.16)] backdrop-blur-md">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/75">
-                    LEARN FAST
-                  </div>
-                  <div className="mt-1 text-[18px] font-semibold leading-none">
-                    Validate locally
-                  </div>
-                </div>
+      <div className="relative z-10">
+        <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#5b451b] drop-shadow-[0_1px_1px_rgba(255,255,255,0.45)]">
+          Brazil Entry
+        </div>
 
-                <div className="rounded-[16px] border border-white/30 bg-[#163e1f]/78 px-4 py-3 text-white shadow-[0_10px_24px_rgba(0,0,0,0.16)] backdrop-blur-md">
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/75">
-                    GROW SMART
-                  </div>
-                  <div className="mt-1 text-[18px] font-semibold leading-none">
-                    Scale with confidence
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <h3 className="mt-2 text-[18px] font-semibold leading-snug text-[#102b19] sm:text-[21px]">
+          Strategy with local execution
+        </h3>
+
+        <ul className="mt-3 space-y-2 text-[13px] leading-relaxed text-[#263d2d] sm:text-[14px]">
+          <li>• Go-to-market adapted to Brazil</li>
+          <li>• Local partnerships and pilots</li>
+          <li>• Faster learning, less risk</li>
+        </ul>
+      </div>
+    </div>
+
+    {/* Card verde glass 1 */}
+    <div className="relative flex min-h-[84px] flex-col justify-center overflow-hidden rounded-[22px] border border-white/22 bg-[linear-gradient(135deg,rgba(23,77,33,0.76),rgba(12,49,19,0.50))] p-4 text-white shadow-[0_12px_34px_rgba(0,0,0,0.22)] backdrop-blur-2xl sm:min-h-[104px] lg:min-h-[102px]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_0%,rgba(255,255,255,0.20),transparent_36%)]" />
+      <div className="relative z-10">
+        <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#dceccf]">
+          Learn Fast
+        </div>
+        <div className="mt-2 text-[18px] font-semibold leading-[1.12] sm:text-[20px]">
+          Validate locally
+        </div>
+      </div>
+    </div>
+
+    {/* Card verde glass 2 */}
+    <div className="relative flex min-h-[84px] flex-col justify-center overflow-hidden rounded-[22px] border border-white/22 bg-[linear-gradient(135deg,rgba(16,63,24,0.78),rgba(6,38,14,0.52))] p-4 text-white shadow-[0_12px_34px_rgba(0,0,0,0.22)] backdrop-blur-2xl sm:min-h-[104px] lg:min-h-[102px]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_0%,rgba(255,255,255,0.18),transparent_36%)]" />
+      <div className="relative z-10">
+        <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#dceccf]">
+          Grow Smart
+        </div>
+        <div className="mt-2 text-[18px] font-semibold leading-[1.12] sm:text-[20px]">
+          Scale with confidence
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Borda elegante */}
+  <div className="pointer-events-none absolute inset-0 rounded-[30px] ring-1 ring-white/20" />
+</div>     
+
+</section>
 
         <section id="about" className="pt-10">
           <div className="text-[14px] font-semibold uppercase tracking-[0.2em] text-[#56724f]">
