@@ -5,6 +5,7 @@ import {
   ArrowRight,
   BarChart3,
   Cpu,
+  ExternalLink,
   Globe,
   Leaf,
   Rocket,
@@ -17,6 +18,8 @@ import {
   Wifi,
   Check,
 } from "lucide-react";
+
+const LINKEDIN_URL = "https://www.linkedin.com/company/nativaag/";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -236,17 +239,40 @@ body: JSON.stringify({
               <a href="#contact">CONTACT</a>
             </nav>
 
-            <a
-              href="#contact"
-              onClick={() =>
-                trackEvent("cta_lets_talk_click", {
-                  location: "header",
-                })
-              }
-              className="shrink-0 whitespace-nowrap rounded-xl bg-[#144c1f] px-4 py-3 text-[12px] font-semibold uppercase text-white shadow-sm transition hover:bg-[#1a5c27] sm:px-7 sm:py-4 sm:text-[13px]"
-            >
-              LET’S TALK
-            </a>
+<div className="flex shrink-0 items-center gap-2">
+  <a
+    href={LINKEDIN_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Visit Nativa on LinkedIn"
+    onClick={() =>
+      trackEvent("linkedin_click", {
+        location: "header",
+        source: "homepage",
+        page_path: window.location.pathname,
+        page_location: window.location.href,
+      })
+    }
+    className="inline-flex h-[42px] w-[42px] items-center justify-center rounded-xl border border-[#174d21]/15 bg-white text-[#174d21] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#eef3eb] sm:h-[48px] sm:w-[48px]"
+  >
+    <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5" />
+  </a>
+
+  <a
+    href="#contact"
+    onClick={() =>
+      trackEvent("cta_lets_talk_click", {
+        location: "header",
+        source: "homepage",
+        page_path: window.location.pathname,
+        page_location: window.location.href,
+      })
+    }
+    className="shrink-0 whitespace-nowrap rounded-xl bg-[#144c1f] px-4 py-3 text-[12px] font-semibold uppercase text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#1a5c27] sm:px-7 sm:py-4 sm:text-[13px]"
+  >
+    LET’S TALK
+  </a>
+</div>
           </div>
         </header>
 
@@ -651,20 +677,41 @@ body: JSON.stringify({
                   <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#bfd7bf]">
                     Prefer email?
                   </div>
-                  <p className="mt-2 text-[14px] leading-6">
-                    Contact us directly at{" "}
-                    <a
-                      href="mailto:contact@nativaag.com.br"
-                      onClick={() =>
-                        trackEvent("contact_email_click", {
-                          location: "contact_section",
-                        })
-                      }
-                      className="font-semibold text-white underline underline-offset-4 hover:text-[#d8e7d1]"
-                    >
-                      contact@nativaag.com.br
-                    </a>
-                  </p>
+<p className="mt-2 text-[14px] leading-6">
+  Contact us directly at{" "}
+  <a
+    href="mailto:contact@nativaag.com.br"
+    onClick={() =>
+      trackEvent("contact_email_click", {
+        location: "contact_section",
+        source: "homepage",
+        page_path: window.location.pathname,
+        page_location: window.location.href,
+      })
+    }
+    className="font-semibold text-white underline underline-offset-4 hover:text-[#d8e7d1]"
+  >
+    contact@nativaag.com.br
+  </a>{" "}
+  or follow Nativa on{" "}
+  <a
+    href={LINKEDIN_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+    onClick={() =>
+      trackEvent("linkedin_click", {
+        location: "contact_section",
+        source: "homepage",
+        page_path: window.location.pathname,
+        page_location: window.location.href,
+      })
+    }
+    className="font-semibold text-white underline underline-offset-4 hover:text-[#d8e7d1]"
+  >
+    LinkedIn
+  </a>
+  .
+</p>
                 </div>
               </div>
 
